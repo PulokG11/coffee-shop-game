@@ -1,0 +1,76 @@
+{
+  "id": "default_v1",
+  "version": "1.0.0",
+  "name": "Default Scenario",
+  "rounds": [
+    {
+      "round": 1,
+      "description": "Newsvendor: hot drinks only",
+      "hot_mean": 50, "cold_mean": 0,
+      "hot_cost": 1.00, "cold_cost": 0.00,
+      "hot_price": 3.50, "cold_price": 0.00,
+      "markup_enabled": false, "queue_enabled": false
+    },
+    {
+      "round": 2,
+      "description": "Add cold drinks",
+      "hot_mean": 40, "cold_mean": 30,
+      "hot_cost": 1.00, "cold_cost": 0.80,
+      "hot_price": 3.50, "cold_price": 3.00,
+      "markup_enabled": false, "queue_enabled": false
+    },
+    {
+      "round": 3,
+      "description": "Resource constraints (beans, water)",
+      "hot_mean": 40, "cold_mean": 30,
+      "hot_cost": 1.00, "cold_cost": 0.80,
+      "hot_price": 3.50, "cold_price": 3.00,
+      "markup_enabled": false, "queue_enabled": false,
+      "bean_capacity": 60, "water_capacity": 55
+    },
+    {
+      "round": 4,
+      "description": "Multiple drink types",
+      "hot_mean": 25, "cold_mean": 25,
+      "hot_cost": 1.00, "cold_cost": 0.80,
+      "hot_price": 3.50, "cold_price": 3.00,
+      "markup_enabled": false, "queue_enabled": false
+    },
+    {
+      "round": 5,
+      "description": "Price markup decision",
+      "hot_mean": 50, "cold_mean": 30,
+      "hot_cost": 1.00, "cold_cost": 0.80,
+      "hot_price": 3.50, "cold_price": 3.00,
+      "markup_enabled": true, "queue_enabled": false,
+      "arrival_rate": 30.0, "service_rate": 3.0
+    },
+    {
+      "round": 6,
+      "description": "Queue balking",
+      "hot_mean": 50, "cold_mean": 30,
+      "hot_cost": 1.00, "cold_cost": 0.80,
+      "hot_price": 3.50, "cold_price": 3.00,
+      "markup_enabled": false, "queue_enabled": true,
+      "arrival_rate": 40.0, "service_rate": 3.0, "balk_threshold": 5
+    },
+    {
+      "round": 7,
+      "description": "Service rate + markup",
+      "hot_mean": 50, "cold_mean": 30,
+      "hot_cost": 1.00, "cold_cost": 0.80,
+      "hot_price": 3.50, "cold_price": 3.00,
+      "markup_enabled": true, "queue_enabled": true,
+      "arrival_rate": 40.0, "service_rate": 3.0, "balk_threshold": 5
+    },
+    {
+      "round": 8,
+      "description": "Full complexity",
+      "hot_mean": 55, "cold_mean": 35,
+      "hot_cost": 1.00, "cold_cost": 0.80,
+      "hot_price": 3.50, "cold_price": 3.00,
+      "markup_enabled": true, "queue_enabled": true,
+      "arrival_rate": 45.0, "service_rate": 3.0, "balk_threshold": 4
+    }
+  ]
+}

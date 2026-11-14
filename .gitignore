@@ -1,5 +1,37 @@
-﻿.DS_Store
-Thumbs.db
-*.log
+﻿# Dependencies
 node_modules/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
 
+# Build output
+dist/
+build/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Supabase
+supabase/.branches/
+supabase/.temp/
+
+# TypeScript
+*.tsbuildinfo
