@@ -1,12 +1,33 @@
+import { useEffect } from 'react'
+import { Comparison } from './components/Comparison'
+import { Home } from './components/Home'
+import { PlayScreen } from './components/PlayScreen'
+import { Summary } from './components/Summary'
+import { TopBar } from './components/TopBar'
+import { useGame } from './store/game'
+
 export default function App() {
+  const screen = useGame((s) => s.screen)
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [screen])
+
   return (
-    <div className="min-h-screen bg-coffee-50 flex items-center justify-center">
-      <div className="text-center">
-        <h1 className="text-4xl font-display font-bold text-coffee-800 mb-2">
-          ☕ Coffee Shop Game
-        </h1>
-        <p className="text-coffee-500">Coming soon…</p>
-      </div>
+    <div className="min-h-screen bg-coffee-50 font-body text-coffee-900">
+      {screen === 'home' && <Home />}
+      {screen === 'play' && <PlayScreen />}
+      {screen === 'compare' && (
+        <>
+          <TopBar />
+          <Comparison />
+        </>
+      )}
+      {screen === 'summary' && (
+        <>
+          <TopBar />
+          <Summary />
+        </>
+      )}
     </div>
   )
 }

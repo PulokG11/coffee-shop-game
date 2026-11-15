@@ -1,0 +1,151 @@
+{
+  "id": "default_v2",
+  "version": "2.0.0",
+  "name": "Opening Week",
+  "hours": 120,
+  "notes": "All numbers are designed for this game, not taken from any published game. Rates are per hour; resources are per hour of brewing.",
+  "sliders": {
+    "hot": { "min": 0, "max": 100, "step": 1, "label": "Hot coffees / hour", "unit": "cups" },
+    "cold": { "min": 0, "max": 100, "step": 1, "label": "Cold coffees / hour", "unit": "cups" },
+    "markup": { "min": 0, "max": 6, "step": 0.1, "label": "Markup", "unit": "$" },
+    "service": { "min": 20, "max": 100, "step": 1, "label": "Barista skill", "unit": "cust / h" }
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "title": "Hot coffee only",
+      "wrinkle": "One slider, no brewing cost, limited beans and water",
+      "intro": "Welcome to opening day! Only hot coffee is on the menu, and brewing is free this round, so every cup you sell is pure profit. The catch: the shop only has so many beans and so much water each hour. Push the slider up and watch the Constraint Monitor.",
+      "decisions": ["hot"],
+      "drinks": {
+        "hot": { "psi": 1.0, "price": 3.0, "cost": 0, "use": { "beans": 10, "water": 200 } },
+        "cold": { "psi": 0.0, "price": 4.0, "cost": 0, "use": { "beans": 16, "water": 100 } }
+      },
+      "arrivals": { "lambda0": 40, "k": 0 },
+      "service": { "mu": 120, "costPerUnit": 0 },
+      "balk": null,
+      "orders": null,
+      "resources": { "beans": 450, "water": 12000 },
+      "defaults": { "hot": 30, "cold": 0, "markup": 0, "service": 120 }
+    },
+    {
+      "round": 2,
+      "title": "Hot and cold",
+      "wrinkle": "Two drinks now share the same beans and water",
+      "intro": "Iced coffee has arrived. Cold drinks sell for more but use more beans per cup, while hot coffee uses more water. Brewing is still free, so the question is how to split the beans and water between the two drinks.",
+      "decisions": ["hot", "cold"],
+      "drinks": {
+        "hot": { "psi": 0.6, "price": 3.0, "cost": 0, "use": { "beans": 10, "water": 200 } },
+        "cold": { "psi": 0.4, "price": 4.0, "cost": 0, "use": { "beans": 16, "water": 100 } }
+      },
+      "arrivals": { "lambda0": 60, "k": 0 },
+      "service": { "mu": 150, "costPerUnit": 0 },
+      "balk": null,
+      "orders": null,
+      "resources": { "beans": 600, "water": 9000 },
+      "defaults": { "hot": 25, "cold": 15, "markup": 0, "service": 150 }
+    },
+    {
+      "round": 3,
+      "title": "Hot coffee costs money",
+      "wrinkle": "Each hot cup brewed costs $1.20, sold or not",
+      "intro": "Our supplier now charges $1.20 for every hot cup we brew, and cups nobody buys are poured away at the end of the hour. Over-brewing now wastes real money. Cold brew is still free this round.",
+      "decisions": ["hot", "cold"],
+      "drinks": {
+        "hot": { "psi": 0.6, "price": 3.0, "cost": 1.2, "use": { "beans": 10, "water": 200 } },
+        "cold": { "psi": 0.4, "price": 4.0, "cost": 0, "use": { "beans": 16, "water": 100 } }
+      },
+      "arrivals": { "lambda0": 60, "k": 0 },
+      "service": { "mu": 150, "costPerUnit": 0 },
+      "balk": null,
+      "orders": null,
+      "resources": { "beans": 800, "water": 11000 },
+      "defaults": { "hot": 40, "cold": 25, "markup": 0, "service": 150 }
+    },
+    {
+      "round": 4,
+      "title": "Every cup costs money",
+      "wrinkle": "Cold cups now cost $2.00 to brew too",
+      "intro": "Both drinks cost money to brew now: $1.20 per hot cup and $2.00 per cold cup. More customers are coming in, too. Look for the peak on the Profit Monitor, and check whether the beans let you reach it.",
+      "decisions": ["hot", "cold"],
+      "drinks": {
+        "hot": { "psi": 0.6, "price": 3.0, "cost": 1.2, "use": { "beans": 10, "water": 200 } },
+        "cold": { "psi": 0.4, "price": 4.0, "cost": 2.0, "use": { "beans": 16, "water": 100 } }
+      },
+      "arrivals": { "lambda0": 70, "k": 0 },
+      "service": { "mu": 160, "costPerUnit": 0 },
+      "balk": null,
+      "orders": null,
+      "resources": { "beans": 800, "water": 11000 },
+      "defaults": { "hot": 35, "cold": 25, "markup": 0, "service": 160 }
+    },
+    {
+      "round": 5,
+      "title": "You set the price",
+      "wrinkle": "Markup is a decision; higher prices mean fewer customers",
+      "intro": "You now choose the markup: the price of each drink is its brewing cost plus your markup. A bigger markup earns more per cup, but fewer people walk in the door. Use the Price view of the Profit Monitor to find where those two forces balance.",
+      "decisions": ["hot", "cold", "markup"],
+      "drinks": {
+        "hot": { "psi": 0.6, "price": 3.0, "cost": 1.0, "use": { "beans": 10, "water": 200 } },
+        "cold": { "psi": 0.4, "price": 4.0, "cost": 1.5, "use": { "beans": 16, "water": 100 } }
+      },
+      "arrivals": { "lambda0": 110, "k": 0.35 },
+      "service": { "mu": 150, "costPerUnit": 0 },
+      "balk": null,
+      "orders": null,
+      "resources": { "beans": 900, "water": 14000 },
+      "defaults": { "hot": 30, "cold": 20, "markup": 2.0, "service": 150 }
+    },
+    {
+      "round": 6,
+      "title": "Long lines scare people off",
+      "wrinkle": "Arriving customers may balk when the line is long",
+      "intro": "Our barista now serves about 45 customers an hour. When the line gets long, some arriving customers take one look and leave. Low prices bring crowds, but crowds bring lines. Watch the wait time and the lost customers.",
+      "decisions": ["hot", "cold", "markup"],
+      "drinks": {
+        "hot": { "psi": 0.6, "price": 3.0, "cost": 1.0, "use": { "beans": 10, "water": 200 } },
+        "cold": { "psi": 0.4, "price": 4.0, "cost": 1.5, "use": { "beans": 16, "water": 100 } }
+      },
+      "arrivals": { "lambda0": 110, "k": 0.35 },
+      "service": { "mu": 45, "costPerUnit": 0 },
+      "balk": { "beta": 3 },
+      "orders": null,
+      "resources": { "beans": 900, "water": 14000 },
+      "defaults": { "hot": 25, "cold": 17, "markup": 2.0, "service": 45 }
+    },
+    {
+      "round": 7,
+      "title": "Bigger orders",
+      "wrinkle": "Customers may order one, two or three cups",
+      "intro": "Office groups have discovered us: a customer may now order up to three cups at once. Demand per hour goes up and becomes much more variable. If we run short, a group gets only some of its cups.",
+      "decisions": ["hot", "cold", "markup"],
+      "drinks": {
+        "hot": { "psi": 0.6, "price": 3.0, "cost": 1.0, "use": { "beans": 10, "water": 200 } },
+        "cold": { "psi": 0.4, "price": 4.0, "cost": 1.5, "use": { "beans": 16, "water": 100 } }
+      },
+      "arrivals": { "lambda0": 110, "k": 0.35 },
+      "service": { "mu": 45, "costPerUnit": 0 },
+      "balk": { "beta": 3 },
+      "orders": { "p": [0.55, 0.3, 0.15] },
+      "resources": { "beans": 1300, "water": 20000 },
+      "defaults": { "hot": 40, "cold": 27, "markup": 2.0, "service": 45 }
+    },
+    {
+      "round": 8,
+      "title": "Hire your barista",
+      "wrinkle": "Barista skill is a decision; faster baristas cost more",
+      "intro": "Final round: you choose how skilled the barista is. A faster barista keeps the line short, so fewer customers balk, but costs $0.60 per hour for every customer per hour of speed. Every effect from the week is now in play at once.",
+      "decisions": ["hot", "cold", "markup", "service"],
+      "drinks": {
+        "hot": { "psi": 0.6, "price": 3.0, "cost": 1.0, "use": { "beans": 10, "water": 200 } },
+        "cold": { "psi": 0.4, "price": 4.0, "cost": 1.5, "use": { "beans": 16, "water": 100 } }
+      },
+      "arrivals": { "lambda0": 110, "k": 0.35 },
+      "service": { "mu": 45, "costPerUnit": 0.6 },
+      "balk": { "beta": 3 },
+      "orders": { "p": [0.55, 0.3, 0.15] },
+      "resources": { "beans": 1300, "water": 20000 },
+      "defaults": { "hot": 40, "cold": 27, "markup": 2.0, "service": 45 }
+    }
+  ]
+}

@@ -5,12 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "test": "vitest",
+    "test": "vitest run",
     "test:ui": "vitest --ui",
     "lint": "eslint src --ext ts,tsx",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.10.4",
