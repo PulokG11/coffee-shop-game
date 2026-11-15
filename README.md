@@ -2,7 +2,11 @@
 
 Browser-based teaching game inspired by Gurobean (Gurobi Optimization and Prof. Larry Snyder, Lehigh University); independent and not affiliated. You run a coffee shop for eight rounds, choosing how much hot and cold coffee to brew each hour, then the price and the barista's speed, and try to beat an optimizer while customers arrive at random.
 
+**▶ Play it now: https://pulokg11.github.io/coffee-shop-game/**
+
 ## Play
+
+Open the link above in a desktop browser (tablets and phones work too). To run it locally instead:
 
 ```bash
 npm install
@@ -63,6 +67,8 @@ Copy `.env.example` to `.env` and set `DATABASE_URL` (Neon pooled connection str
 
 ## Deploy
 
-`.github/workflows/pages.yml` runs tests and the build on every push. Publishing to GitHub Pages is opt-in: enable Pages (Settings → Pages → Source: GitHub Actions) and set the repository variable `PAGES_ENABLED=true`.
+The game is hosted on GitHub Pages at https://pulokg11.github.io/coffee-shop-game/.
+
+`.github/workflows/pages.yml` runs the tests and the build on every push and pull request. Every push to `main` then redeploys the site, because the repository variable `PAGES_ENABLED` is `true`. To stop publishing, set `PAGES_ENABLED` to `false`; to take the site down, also turn off Pages in Settings → Pages.
 
 See `CHANGELOG.md` for releases and rollback.
