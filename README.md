@@ -9,7 +9,8 @@ Browser-based educational simulation inspired by the Gurobean game (Gurobi / Pro
 | Client | React 19 · TypeScript · Vite · Tailwind CSS · Canvas 2D · Zustand |
 | Client worker | TypeScript Web Worker (live DES simulation) |
 | Server | FastAPI (Python 3.12) · NumPy · SciPy · HiGHS (via highspy) |
-| Database | Supabase Postgres 15 · Realtime · Auth · Storage |
+| Database | Neon Postgres 17 (Lakebase) · LISTEN/NOTIFY for live leaderboard |
+| Auth | JWT (python-jose + bcrypt) backed by `public.users` table |
 | Rate limiting | Upstash Redis (free tier) |
 | Client hosting | Vercel (free hobby) |
 | Server hosting | Railway (free tier, stateless workers) |
@@ -27,12 +28,12 @@ coffee-shop-game/
 │   ├── lib/
 │   │   ├── simulation/     # Client-side DES preview
 │   │   ├── model/          # Analytic expected-profit model
-│   │   └── api/            # Supabase + server API clients
+│   │   └── api/            # FastAPI client (neon.ts) — JWT auth, game, leaderboard SSE
 │   ├── types/              # Shared TypeScript types
 │   └── pages/              # Page components
 ├── server/                 # FastAPI Python server
 │   ├── app/
-│   │   ├── routers/        # simulate, optimize, scenarios endpoints
+│   │   ├── routers/        # auth, simulate, optimize, scenarios, leaderboard endpoints
 │   │   ├── simulation/     # Authoritative DES (des.py)
 │   │   ├── optimizer/      # HiGHS LP (Rounds 1-4), SciPy DE (Rounds 5-8)
 │   │   └── schemas/        # Pydantic request/response models
@@ -72,12 +73,22 @@ pytest                          # test suite
 
 ### Environment
 
-Copy `.env.example` to `.env` and fill in your Supabase project keys.
-
-### Supabase migrations
+Copy `.env.example` to `.env` and fill in your Neon connection string and JWT secret.
 
 ```bash
-supabase db push --project-ref <your-ref>
+cp .env.example .env
+# Edit DATABASE_URL with the pooled connection string from your Neon dashboard
+# Generate JWT_SECRET: openssl rand -hex 32
+```
+
+### Database migrations
+
+Apply migrations to your Neon project using the Neon CLI or by running the SQL files directly:
+
+```bash
+# Via psql (requires DATABASE_URL in env)
+psql "$DATABASE_URL" -f supabase/migrations/001_init.sql
+psql "$DATABASE_URL" -f supabase/migrations/002_realtime.sql
 ```
 
 ## Round Design
