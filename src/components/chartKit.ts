@@ -1,11 +1,11 @@
 import type { DecisionKey } from '../engine/types'
 
 export const VIZ = {
-  surface: '#fffdf8',
-  ink: '#2e1808',
-  secondary: '#52514e',
-  muted: '#898781',
-  grid: '#ece4d6',
+  surface: '#ffffff',
+  ink: '#2a1d17',
+  secondary: '#5b514b',
+  muted: '#8a817b',
+  grid: '#ece8df',
   axis: '#c3c2b7',
   you: '#6250d6',
   optimizer: '#008300',
@@ -13,7 +13,7 @@ export const VIZ = {
   cold: '#2a78d6',
   critical: '#d03b3b',
   good: '#0ca30c',
-  curve: '#723c14',
+  curve: '#2a1d17',
 }
 
 export function niceTicks(min: number, max: number, count = 4): number[] {

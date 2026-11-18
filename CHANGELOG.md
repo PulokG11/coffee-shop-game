@@ -7,6 +7,23 @@ git checkout v0.1.0-scaffold -- src scenarios
 git commit -m "rollback: client to v0.1.0-scaffold"
 ```
 
+## v0.3.0-redesign — 2026-11-18
+
+Visual redesign, reviewed against the Gurobean screens but with its own identity: café chalkboard, order tickets and a till instead of the earlier cream dashboard.
+
+- **Shop scene** is larger (900×420) and the window follows the simulated clock: night, dawn, day and dusk skies, sun and moon, lit city windows after dark, an "Open 24h" neon that glows at night, pendant lamps, a chalk menu showing the round's real prices, BrewBot stock tanks, walking customers with varied looks.
+- **Play screen**: framed stage with a chalkboard HUD and tactile speed buttons, live numbers on a till display, decision panels as order tickets hanging from a rail, and a "Feasible / Infeasible" rubber stamp.
+- **New**: round briefing with a table of the day's numbers (prices, costs, beans and water per cup, supplies, arrivals, barista speed); a "Lock in this plan?" confirmation before scoring.
+- **Home**: illustrated shopfront at blue hour with the play buttons on a sidewalk chalkboard. **Results and summary**: till-style scores and a receipt.
+- **Type and color**: Lilita One (display) and Lexend (text), bundled with the app; chalkboard green, chalk, receipt paper, coffee-cherry red and marigold. Chart colors are unchanged.
+- **Fixes**: the canvas no longer forces the play screen wider than a phone; dialogs render in a portal so the ticket's shadow filter cannot trap them.
+
+Rollback: `git checkout v0.2.1-readme -- src index.html tailwind.config.ts package.json package-lock.json` (the engine and scenario did not change).
+
+## v0.2.1-readme — 2026-11-15
+
+README links the live site. No app changes.
+
 ## v0.2.0-prototype — 2026-11-15
 
 Playable single-player prototype of all eight rounds, running entirely in the browser.

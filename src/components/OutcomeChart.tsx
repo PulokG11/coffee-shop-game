@@ -79,7 +79,7 @@ export function OutcomeChart({ rows }: { rows: Row[] }) {
 
   return (
     <figure>
-      <div className="mb-1 flex flex-wrap gap-x-4 gap-y-1 text-xs text-[#52514e]">
+      <div className="mb-1 flex flex-wrap gap-x-4 gap-y-1 text-sm text-ink-soft">
         {rows.map((r) => (
           <span key={r.label} className="flex items-center gap-1.5">
             <span aria-hidden className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: r.color }} />
@@ -99,7 +99,7 @@ export function OutcomeChart({ rows }: { rows: Row[] }) {
           this scored week
         </span>
         <span className="flex items-center gap-1.5">
-          <span aria-hidden className="inline-block h-2 w-5 rounded-full bg-[#52514e]/25" />
+          <span aria-hidden className="inline-block h-2 w-5 rounded-full bg-ink-soft/25" />
           90% of simulated weeks
         </span>
       </div>
@@ -167,7 +167,7 @@ export function OutcomeChart({ rows }: { rows: Row[] }) {
           )
         })}
       </svg>
-      <figcaption className="min-h-[2.5rem] text-xs text-[#52514e]" aria-live="polite">
+      <figcaption className="min-h-[2.5rem] text-sm text-ink-soft" aria-live="polite">
         {readout}
       </figcaption>
     </figure>

@@ -2,35 +2,141 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  background: #fdf8f0;
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-board font-body text-chalk antialiased;
+    /* Faint chalk dust so the board does not read as a flat UI color */
+    background-image:
+      radial-gradient(ellipse at 20% 10%, rgba(236, 238, 228, 0.05), transparent 55%),
+      radial-gradient(ellipse at 80% 90%, rgba(236, 238, 228, 0.04), transparent 50%);
+    background-attachment: fixed;
+  }
+  :focus-visible {
+    outline: 3px solid theme('colors.marigold.DEFAULT');
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+}
+
+@layer components {
+  /* Order ticket hanging from the rail: white paper with a torn bottom edge */
+  .ticket {
+    @apply relative bg-paper px-4 pb-6 pt-4 text-ink;
+    color-scheme: light;
+    --tooth: 7px;
+    -webkit-mask:
+      linear-gradient(#000 0 0) top / 100% calc(100% - var(--tooth)) no-repeat,
+      conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / calc(var(--tooth) * 2) var(--tooth) repeat-x;
+    mask:
+      linear-gradient(#000 0 0) top / 100% calc(100% - var(--tooth)) no-repeat,
+      conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / calc(var(--tooth) * 2) var(--tooth) repeat-x;
+  }
+  .ticket-hang {
+    @apply relative pt-3;
+    filter: drop-shadow(0 3px 0 rgba(0, 0, 0, 0.28));
+  }
+  .ticket-hang::before {
+    content: '';
+    @apply absolute left-1/2 top-0 z-10 h-5 w-10 -translate-x-1/2 rounded-sm;
+    background: linear-gradient(#d9dcd6, #9aa09a);
+    box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.2);
+  }
+  .ticket-title {
+    @apply font-display text-xl leading-tight text-ink;
+  }
+  .paper-card {
+    @apply rounded-lg bg-paper p-4 text-ink;
+    color-scheme: light;
+  }
+
+  /* Tactile game buttons: a solid face sitting on a darker base that it presses into */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 font-display text-lg leading-none transition-transform duration-75 select-none;
+    box-shadow: 0 4px 0 var(--base);
+  }
+  .btn:active:not(:disabled) {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 var(--base);
+  }
+  .btn:disabled {
+    @apply cursor-not-allowed opacity-45;
+  }
+  .btn-cherry {
+    @apply bg-cherry text-white;
+    --base: theme('colors.cherry.dark');
+  }
+  .btn-cherry:hover:not(:disabled) {
+    @apply brightness-110;
+  }
+  .btn-marigold {
+    @apply bg-marigold text-ink;
+    --base: theme('colors.marigold.dark');
+  }
+  .btn-marigold:hover:not(:disabled) {
+    @apply brightness-105;
+  }
+  .btn-chalk {
+    @apply border-2 border-chalk/70 bg-board-raised text-chalk;
+    --base: #111a16;
+  }
+  .btn-chalk:hover:not(:disabled) {
+    @apply border-chalk;
+  }
+  .btn-paper {
+    @apply border-2 border-ink bg-paper text-ink;
+    --base: theme('colors.ink.DEFAULT');
+  }
+  .btn-paper:hover:not(:disabled) {
+    @apply bg-paper-tint;
+  }
+
+  /* Rubber stamp for feasibility */
+  .stamp {
+    @apply inline-block rotate-[-4deg] rounded-md border-[3px] px-2 py-0.5 font-display text-base leading-none;
+  }
+
+  /* Cash-register display */
+  .till {
+    @apply rounded-xl bg-till text-till-glow;
+    box-shadow: inset 0 0 0 2px #26302b, inset 0 2px 12px rgba(0, 0, 0, 0.7);
+  }
+  .till-digits {
+    @apply font-body font-bold tabular-nums;
+    text-shadow: 0 0 8px rgba(156, 242, 200, 0.45);
+  }
+
+  .chalk-rule {
+    @apply border-t-2 border-dashed border-chalk/25;
+  }
 }
 
 .slider {
   -webkit-appearance: none;
   appearance: none;
-  height: 6px;
+  height: 8px;
   border-radius: 999px;
-  background: #f0d5a0;
-  outline-offset: 4px;
+  background: #e6e2d8;
 }
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 18px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
   border-radius: 999px;
-  background: #723c14;
-  border: 2px solid #fffdf8;
-  box-shadow: 0 0 0 1px #723c14;
+  background: #2a1d17;
+  border: 3px solid #ffffff;
+  box-shadow: 0 0 0 2px #2a1d17;
   cursor: pointer;
 }
 .slider::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border-radius: 999px;
-  background: #723c14;
-  border: 2px solid #fffdf8;
+  background: #2a1d17;
+  border: 3px solid #ffffff;
   cursor: pointer;
 }
 .slider-bad {
@@ -38,8 +144,17 @@ body {
 }
 .slider-bad::-webkit-slider-thumb {
   background: #d03b3b;
-  box-shadow: 0 0 0 1px #d03b3b;
+  box-shadow: 0 0 0 2px #d03b3b;
 }
 .slider-bad::-moz-range-thumb {
   background: #d03b3b;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
 }

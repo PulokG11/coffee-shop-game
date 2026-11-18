@@ -32,25 +32,26 @@ export function ConstraintMonitor({ r, draft }: { r: RoundSpec; draft: Decision 
   const twoDrinks = r.decisions.includes('cold')
 
   return (
-    <section aria-labelledby="cm-title" className="rounded-xl bg-[#fffdf8] p-3 shadow-sm ring-1 ring-black/5">
-      <h3 id="cm-title" className="text-sm font-semibold text-coffee-900">
+    <section aria-labelledby="cm-title" className="ticket-hang">
+      <div className="ticket">
+      <h3 id="cm-title" className="ticket-title">
         Constraint Monitor
       </h3>
-      <p className="mt-0.5 text-xs text-[#52514e]">What one hour of brewing needs, against what the shop has.</p>
-      <div className="mt-2 space-y-2.5">
+      <p className="mt-0.5 text-sm text-ink-soft">What one hour of brewing needs, against what the shop has.</p>
+      <div className="mt-3 space-y-3">
         {rows.map((row) => {
           const over = row.used > row.cap + 1e-9
           const frac = Math.min(1, row.used / row.cap)
           return (
             <div key={row.key}>
-              <div className="flex justify-between text-xs">
-                <span className="font-medium text-coffee-900">{row.label}</span>
-                <span className="tabular-nums text-[#52514e]">
+              <div className="flex justify-between text-sm">
+                <span className="font-bold">{row.label}</span>
+                <span className="tabular-nums text-ink-soft">
                   {fmtInt(row.used)} / {fmtInt(row.cap)} {row.unit} per hour
                 </span>
               </div>
               <div
-                className="mt-1 h-2.5 w-full overflow-hidden rounded-full bg-coffee-100"
+                className="mt-1 h-3 w-full overflow-hidden rounded-full bg-paper-edge"
                 role="meter"
                 aria-label={`${row.label} used`}
                 aria-valuemin={0}
@@ -59,12 +60,12 @@ export function ConstraintMonitor({ r, draft }: { r: RoundSpec; draft: Decision 
               >
                 <div
                   className="h-full rounded-full transition-[width] duration-150"
-                  style={{ width: `${frac * 100}%`, background: over ? VIZ.critical : '#964f17' }}
+                  style={{ width: `${frac * 100}%`, background: over ? VIZ.critical : VIZ.ink }}
                 />
               </div>
               {over && (
-                <p className="mt-1 text-xs font-medium text-[#b42318]">
-                  ⚠ Over by {fmtInt(row.used - row.cap)} {row.unit}: this plan is infeasible
+                <p className="mt-1 text-sm font-bold text-bad-ink">
+                  ⚠ Over by {fmtInt(row.used - row.cap)} {row.unit}
                 </p>
               )}
             </div>
@@ -72,6 +73,7 @@ export function ConstraintMonitor({ r, draft }: { r: RoundSpec; draft: Decision 
         })}
       </div>
       {twoDrinks && <FeasibleRegion r={r} draft={draft} />}
+      </div>
     </section>
   )
 }
@@ -111,7 +113,7 @@ function FeasibleRegion({ r, draft }: { r: RoundSpec; draft: Decision }) {
             </text>
           </g>
         ))}
-        <polygon points={poly.map(([h, c]) => `${sx(h)},${sy(c)}`).join(' ')} fill="#f0d5a0" fillOpacity="0.7" stroke="#b8651e" strokeWidth="1.5" />
+        <polygon points={poly.map(([h, c]) => `${sx(h)},${sy(c)}`).join(' ')} fill="#fdf0d2" fillOpacity="1" stroke="#b07a10" strokeWidth="1.5" />
         <text x={sx(4)} y={sy(6)} fontSize="10" fill={VIZ.secondary}>
           feasible
         </text>

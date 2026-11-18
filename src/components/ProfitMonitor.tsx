@@ -71,9 +71,10 @@ export function ProfitMonitor({ r, draft }: { r: RoundSpec; draft: Decision }) {
   }
 
   return (
-    <section aria-labelledby="pm-title" className="rounded-xl bg-[#fffdf8] p-3 shadow-sm ring-1 ring-black/5">
+    <section aria-labelledby="pm-title" className="ticket-hang">
+      <div className="ticket">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h3 id="pm-title" className="text-sm font-semibold text-coffee-900">
+        <h3 id="pm-title" className="ticket-title">
           Profit Monitor
         </h3>
         <div role="tablist" aria-label="Vary which decision" className="flex gap-1">
@@ -83,8 +84,8 @@ export function ProfitMonitor({ r, draft }: { r: RoundSpec; draft: Decision }) {
               role="tab"
               aria-selected={view === k}
               onClick={() => setView(k)}
-              className={`rounded-full px-2.5 py-0.5 text-xs font-medium transition ${
-                view === k ? 'bg-coffee-800 text-white' : 'bg-coffee-100 text-coffee-800 hover:bg-coffee-200'
+              className={`rounded-full border-2 px-2.5 py-0.5 text-sm font-bold ${
+                view === k ? 'border-ink bg-ink text-white' : 'border-paper-edge bg-paper text-ink hover:border-ink'
               }`}
             >
               {KEY_LABEL[k]}
@@ -92,7 +93,7 @@ export function ProfitMonitor({ r, draft }: { r: RoundSpec; draft: Decision }) {
           ))}
         </div>
       </div>
-      <p className="mt-0.5 text-xs text-[#52514e]">
+      <p className="mt-1 text-sm text-ink-soft">
         Expected 5-day profit as {KEY_LABEL[view].toLowerCase()} changes, other sliders held where they are.
       </p>
 
@@ -165,18 +166,18 @@ export function ProfitMonitor({ r, draft }: { r: RoundSpec; draft: Decision }) {
         </svg>
         {hv && (
           <div
-            className="pointer-events-none absolute top-1 z-10 rounded-md bg-coffee-900 px-2 py-1 text-xs text-white shadow"
+            className="pointer-events-none absolute top-1 z-10 rounded-md bg-ink px-2 py-1 text-sm text-white shadow"
             style={{ left: `${(sx(hv.v) / W) * 100}%`, transform: `translateX(${sx(hv.v) > W * 0.6 ? '-105%' : '5%'})` }}
           >
-            <div className="font-semibold">{fmtDecision(view, hv.v)}</div>
+            <div className="font-bold">{fmtDecision(view, hv.v)}</div>
             <div>Expected {fmtMoney(hv.y)}</div>
             {!hv.feasible && <div className="text-[#ffb4b4]">Infeasible: not enough beans or water</div>}
           </div>
         )}
       </div>
-      <div className="mt-1 flex items-center gap-1.5 text-xs text-[#52514e]">
-        <span aria-hidden className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: cur.feasible ? VIZ.you : VIZ.critical }} />
-        Your choice: {fmtDecision(view, cur.v)} → expected {fmtMoney(cur.y)}
+      <div className="mt-1 flex items-center gap-1.5 text-sm text-ink-soft">
+        <span aria-hidden className="inline-block h-3 w-3 rounded-full" style={{ background: cur.feasible ? VIZ.you : VIZ.critical }} />
+        Your plan, {fmtDecision(view, cur.v)}, is expected to earn <b className="text-ink">{fmtMoney(cur.y)}</b>
       </div>
       <table className="sr-only">
         <caption>Expected 5-day profit by {KEY_LABEL[view]}</caption>
@@ -192,6 +193,7 @@ export function ProfitMonitor({ r, draft }: { r: RoundSpec; draft: Decision }) {
             ))}
         </tbody>
       </table>
+      </div>
     </section>
   )
 }

@@ -13,7 +13,7 @@ export default function App() {
   }, [screen])
 
   return (
-    <div className="min-h-screen bg-coffee-50 font-body text-coffee-900">
+    <div className="min-h-screen">
       {screen === 'home' && <Home />}
       {screen === 'play' && <PlayScreen />}
       {screen === 'compare' && (

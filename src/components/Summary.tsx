@@ -7,8 +7,8 @@ import { CremaAvatar } from './Guide'
 
 const LESSONS = [
   ['Feasible is not the same as good', 'Every plan inside the beans and water limits was allowed, yet their profits differed enormously.'],
-  ['One week does not judge a decision', 'The same plan earns different amounts on different weeks. Judge a plan by its spread of outcomes, not one lucky or unlucky run.'],
-  ['Intuition breaks down', 'Prices, lines and bigger orders interact. Curves peaked, flattened and shifted in ways that are hard to guess.'],
+  ['One week does not judge a decision', 'The same plan earns different amounts in different weeks. Judge a plan by its spread of outcomes, not one lucky or unlucky run.'],
+  ['Intuition breaks down', 'Prices, lines and group orders interact. Curves peaked, flattened and shifted in ways that are hard to guess.'],
   ['Optimization and simulation work together', 'The optimizer picks the plan that is best on average; simulation shows how that plan behaves week by week.'],
 ]
 
@@ -24,85 +24,91 @@ export function Summary() {
   const wins = results.filter((r) => r.playerRun.profit > r.optimalRun.profit).length
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-6">
-      <section className="rounded-2xl bg-[#fffdf8] p-6 shadow-sm ring-1 ring-black/5">
-        <p className="text-xs font-semibold uppercase tracking-wide text-coffee-500">The week is done</p>
-        <h1 className="font-display text-3xl font-bold text-coffee-900">Final results</h1>
-        <div className="mt-4 grid gap-4 sm:grid-cols-3">
-          <div>
-            <div className="text-sm text-[#52514e]">Your total score</div>
-            <div className="text-4xl font-semibold text-coffee-900">{fmtMoney(you)}</div>
-          </div>
-          <div>
-            <div className="text-sm text-[#52514e]">Optimizer’s total</div>
-            <div className="text-2xl font-semibold text-coffee-900">{fmtMoney(opt)}</div>
-          </div>
-          <div>
-            <div className="text-sm text-[#52514e]">Your plans’ expected value</div>
-            <div className="text-2xl font-semibold text-coffee-900">{optE > 0 ? `${Math.round((youE / optE) * 100)}%` : '—'}</div>
-            <div className="text-xs text-[#52514e]">of the optimizer’s, on average</div>
-          </div>
-        </div>
-        <div className="mt-4 flex gap-3 rounded-xl bg-coffee-50 p-3">
-          <CremaAvatar size={44} />
-          <p className="text-sm leading-relaxed text-coffee-900">
-            You beat the optimizer in {wins} of {results.length} scored weeks.{' '}
-            {wins > 0
-              ? 'Those wins were real, but they came from the customers who happened to show up. Over many weeks, the plans that are best on average pull ahead.'
-              : 'Matching an optimizer by hand is hard when every week is random, and that is the point of using one.'}
-          </p>
-        </div>
-      </section>
+    <main className="mx-auto max-w-[1100px] px-4 py-6">
+      <p className="font-display text-xl text-marigold">Five days, eight rounds</p>
+      <h1 className="font-display text-5xl leading-none text-chalk">Final results</h1>
 
-      <section className="mt-4 overflow-x-auto rounded-2xl bg-[#fffdf8] p-4 shadow-sm ring-1 ring-black/5">
-        <table className="w-full min-w-[560px] text-sm">
-          <thead>
-            <tr className="text-left text-xs text-[#52514e]">
-              <th className="py-1 font-medium">Round</th>
-              <th className="py-1 text-right font-medium">
-                <Swatch c={VIZ.you} /> You (scored week)
-              </th>
-              <th className="py-1 text-right font-medium">
-                <Swatch c={VIZ.optimizer} /> Optimizer
-              </th>
-              <th className="py-1 text-right font-medium">You, expected</th>
-              <th className="py-1 text-right font-medium">Optimizer, expected</th>
-            </tr>
-          </thead>
-          <tbody className="tabular-nums">
-            {results.map((res) => (
-              <tr key={res.round} className="border-t border-coffee-100">
-                <td className="py-1.5">
-                  {res.round}. {getRound(SCENARIO, res.round).title}
-                </td>
-                <td className="py-1.5 text-right font-semibold">
-                  {res.playerRun.profit > res.optimalRun.profit && <span title="You won this week">★ </span>}
-                  {fmtMoney(res.playerRun.profit)}
-                </td>
-                <td className="py-1.5 text-right">{fmtMoney(res.optimalRun.profit)}</td>
-                <td className="py-1.5 text-right">{fmtMoney(res.playerExpected)}</td>
-                <td className="py-1.5 text-right">{fmtMoney(res.optimalExpected)}</td>
+      <div className="mt-5 grid gap-4 md:grid-cols-[1.2fr_1fr_1fr]">
+        <div className="till px-5 py-4">
+          <div className="text-chalk-dim">Your total score</div>
+          <div className="till-digits text-5xl leading-tight">{fmtMoney(you)}</div>
+        </div>
+        <div className="till px-5 py-4">
+          <div className="text-chalk-dim">Optimizer’s total</div>
+          <div className="till-digits text-3xl leading-tight">{fmtMoney(opt)}</div>
+        </div>
+        <div className="till px-5 py-4">
+          <div className="text-chalk-dim">Your plans on average</div>
+          <div className="till-digits text-3xl leading-tight">{optE > 0 ? `${Math.round((youE / optE) * 100)}%` : '—'}</div>
+          <div className="text-sm text-chalk-dim">of the optimizer’s expected profit</div>
+        </div>
+      </div>
+
+      <div className="mt-5 flex max-w-3xl items-start gap-3">
+        <CremaAvatar size={52} />
+        <p className="rounded-2xl rounded-tl-sm bg-paper p-4 leading-relaxed text-ink">
+          You beat the optimizer in {wins} of {results.length} scored weeks.{' '}
+          {wins > 0
+            ? 'Those wins were real, but they came from the customers who happened to show up. Over many weeks, the plans that are best on average pull ahead.'
+            : 'Matching an optimizer by hand is hard when every week is random, and that is the point of using one.'}
+        </p>
+      </div>
+
+      <section aria-label="Round by round" className="ticket-hang mt-8">
+        <div className="ticket overflow-x-auto">
+          <h2 className="ticket-title">Round by round</h2>
+          <table className="mt-2 w-full min-w-[560px] text-[15px]">
+            <thead>
+              <tr className="text-left text-sm text-ink-soft">
+                <th className="py-1 font-normal">Round</th>
+                <th className="py-1 text-right font-bold">
+                  <Swatch c={VIZ.you} /> You
+                </th>
+                <th className="py-1 text-right font-bold">
+                  <Swatch c={VIZ.optimizer} /> Optimizer
+                </th>
+                <th className="py-1 text-right font-normal">You, expected</th>
+                <th className="py-1 text-right font-normal">Optimizer, expected</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-        <p className="mt-2 text-xs text-[#52514e]">★ marks weeks where your plan earned more than the optimizer’s on the same customers.</p>
+            </thead>
+            <tbody className="tabular-nums">
+              {results.map((res) => (
+                <tr key={res.round} className="border-t border-dashed border-paper-edge">
+                  <td className="py-1.5">
+                    {res.round}. {getRound(SCENARIO, res.round).title}
+                  </td>
+                  <td className="py-1.5 text-right font-bold">
+                    {res.playerRun.profit > res.optimalRun.profit && <span title="You won this week">★ </span>}
+                    {fmtMoney(res.playerRun.profit)}
+                  </td>
+                  <td className="py-1.5 text-right">{fmtMoney(res.optimalRun.profit)}</td>
+                  <td className="py-1.5 text-right text-ink-soft">{fmtMoney(res.playerExpected)}</td>
+                  <td className="py-1.5 text-right text-ink-soft">{fmtMoney(res.optimalExpected)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className="mt-2 text-sm text-ink-soft">★ marks weeks where your plan earned more than the optimizer’s with the same customers.</p>
+        </div>
       </section>
 
-      <section className="mt-4 grid gap-3 sm:grid-cols-2">
-        {LESSONS.map(([t, d]) => (
-          <div key={t} className="rounded-xl bg-coffee-50 p-4 ring-1 ring-coffee-100">
-            <h3 className="font-semibold text-coffee-900">{t}</h3>
-            <p className="mt-1 text-sm text-[#52514e]">{d}</p>
-          </div>
-        ))}
+      <section className="mt-10">
+        <h2 className="font-display text-3xl text-chalk">What the week showed</h2>
+        <div className="mt-4 grid gap-x-10 gap-y-6 sm:grid-cols-2">
+          {LESSONS.map(([t, d]) => (
+            <div key={t} className="chalk-rule pt-3">
+              <h3 className="font-display text-xl text-chalk">{t}</h3>
+              <p className="mt-1 text-chalk-dim">{d}</p>
+            </div>
+          ))}
+        </div>
       </section>
 
-      <div className="mt-5 flex justify-end gap-2">
-        <button onClick={goHome} className="rounded-lg border-2 border-coffee-800 px-4 py-2 font-semibold text-coffee-900 hover:bg-coffee-100">
+      <div className="mt-10 flex justify-end gap-3">
+        <button onClick={goHome} className="btn btn-chalk px-5 py-3">
           Home
         </button>
-        <button onClick={newGame} className="rounded-lg bg-coffee-800 px-4 py-2 font-semibold text-white hover:bg-coffee-900">
+        <button onClick={newGame} className="btn btn-cherry px-6 py-3 text-xl">
           Play again
         </button>
       </div>
@@ -110,4 +116,4 @@ export function Summary() {
   )
 }
 
-const Swatch = ({ c }: { c: string }) => <span aria-hidden className="mr-1 inline-block h-2 w-2 rounded-full align-middle" style={{ background: c }} />
+const Swatch = ({ c }: { c: string }) => <span aria-hidden className="mr-1 inline-block h-2.5 w-2.5 rounded-full align-middle" style={{ background: c }} />

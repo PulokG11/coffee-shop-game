@@ -28,33 +28,35 @@ export function PlayScreen() {
   return (
     <>
       <TopBar right={<GuideButton key={round} tips={tips} />} />
-      <main className="mx-auto grid max-w-6xl gap-4 px-4 py-4 lg:grid-cols-[minmax(0,1fr)_380px]">
-        <div className="space-y-3">
-          <section aria-label="The shop" className="space-y-2 rounded-2xl bg-coffee-100/60 p-3">
+      <main className="mx-auto grid max-w-[1400px] gap-6 px-4 py-5 lg:grid-cols-[minmax(0,1fr)_370px]">
+        <div className="min-w-0 space-y-4">
+          <section aria-label="The shop" className="overflow-hidden rounded-2xl border-[6px] border-[#8a5a35] bg-board-raised">
             <SimControls />
             <ShopScene r={r} decision={tried} seed={liveSeed} />
-            <p className="text-xs text-[#52514e]">
-              Running:{' '}
-              {r.decisions.map((k, i) => (
-                <span key={k}>
-                  {i > 0 && ' · '}
-                  {KEY_LABEL[k]} {fmtDecision(k, tried[k])}
-                </span>
-              ))}
-              {tries === 0 && ' (the starting plan; change the sliders and press Try Solution)'}
-            </p>
           </section>
           <LiveStats r={r} />
-          <div className="rounded-xl bg-coffee-50 p-3 text-xs text-[#52514e] ring-1 ring-coffee-100">
-            <b className="text-coffee-900">Round {r.round}: {r.title}.</b> {r.wrinkle}. Customers arrive at random, so the same plan plays out differently every
-            time you run it. Your score is one fresh 5-day run of the plan you submit.
+          <div className="chalk-rule pt-3 text-chalk-dim">
+            <p>
+              <span className="font-display text-lg text-chalk">Running now: </span>
+              {r.decisions.map((k, i) => (
+                <span key={k}>
+                  {i > 0 && ', '}
+                  {KEY_LABEL[k].toLowerCase()} {fmtDecision(k, tried[k])}
+                </span>
+              ))}
+              {tries === 0 && '. This is the starting plan; change the sliders and press Try solution.'}
+            </p>
+            <p className="mt-1">
+              Customers arrive at random, so the same plan plays out differently every time it runs. Your score is one fresh five-day week of the plan you submit.
+            </p>
           </div>
         </div>
-        <div className="space-y-3">
+        <aside aria-label="Your plan and monitors" className="relative space-y-1">
+          <div aria-hidden className="h-2.5 rounded-full bg-gradient-to-b from-[#d9dcd6] to-[#8f958f] shadow-[0_2px_0_rgba(0,0,0,0.35)]" />
           <DecisionPanel r={r} />
           <ConstraintMonitor r={r} draft={draft} />
           <ProfitMonitor key={round} r={r} draft={draft} />
-        </div>
+        </aside>
       </main>
       {introOpen && <RoundIntro r={r} onClose={() => setIntroOpen(false)} />}
     </>
