@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
-import { SCENARIO, getRound } from '../engine/scenario'
+import { getRound } from '../engine/scenario'
 import { fmtMoney } from '../lib/format'
-import { useGame } from '../store/game'
+import { useGame, useScenario } from '../store/game'
 import { VIZ } from './chartKit'
 import { CremaAvatar } from './Guide'
 
@@ -17,6 +17,9 @@ export function Summary() {
   const results = useMemo(() => [...unsorted].sort((a, b) => a.round - b.round), [unsorted])
   const newGame = useGame((s) => s.newGame)
   const goHome = useGame((s) => s.goHome)
+  const scn = useScenario()
+  const mode = useGame((s) => s.mode)
+  const openLeaderboard = useGame((s) => s.openLeaderboard)
   const you = results.reduce((a, r) => a + r.playerRun.profit, 0)
   const opt = results.reduce((a, r) => a + r.optimalRun.profit, 0)
   const youE = results.reduce((a, r) => a + r.playerExpected, 0)
@@ -75,7 +78,7 @@ export function Summary() {
               {results.map((res) => (
                 <tr key={res.round} className="border-t border-dashed border-paper-edge">
                   <td className="py-1.5">
-                    {res.round}. {getRound(SCENARIO, res.round).title}
+                    {res.round}. {getRound(scn, res.round).title}
                   </td>
                   <td className="py-1.5 text-right font-bold">
                     {res.playerRun.profit > res.optimalRun.profit && <span title="You won this week">★ </span>}
@@ -108,9 +111,15 @@ export function Summary() {
         <button onClick={goHome} className="btn btn-chalk px-5 py-3">
           Home
         </button>
-        <button onClick={newGame} className="btn btn-cherry px-6 py-3 text-xl">
-          Play again
-        </button>
+        {mode.kind === 'championship' ? (
+          <button onClick={() => openLeaderboard(mode.code)} className="btn btn-cherry px-6 py-3 text-xl">
+            See the leaderboard
+          </button>
+        ) : (
+          <button onClick={newGame} className="btn btn-cherry px-6 py-3 text-xl">
+            Play again
+          </button>
+        )}
       </div>
     </main>
   )

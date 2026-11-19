@@ -35,3 +35,6 @@ supabase/.temp/
 
 # TypeScript
 *.tsbuildinfo
+
+# Championship API bundle
+dist-api/

@@ -1,7 +1,8 @@
 import { SCENARIO } from '../engine/scenario'
-import { hasSavedGame, useGame } from '../store/game'
+import { champProgress, isFinished, soloProgress, useGame } from '../store/game'
+import { ChampionshipPanel } from './ChampionshipPanel'
 import { CremaAvatar } from './Guide'
-import { Logo } from './TopBar'
+import { Logo, Trophy } from './TopBar'
 
 const STEPS = [
   ['Set a plan', 'Choose how many hot and cold coffees to brew each hour; later rounds add the price and the barista.'],
@@ -12,7 +13,10 @@ const STEPS = [
 
 export function Home() {
   const state = useGame()
-  const saved = hasSavedGame(state)
+  const solo = soloProgress(state)
+  const saved = solo && !isFinished(solo) ? solo : null
+  const champ = champProgress(state)
+  const champMode = champ?.mode.kind === 'championship' && !isFinished(champ) ? champ.mode : null
 
   return (
     <main>
@@ -29,14 +33,22 @@ export function Home() {
               Eight rounds of brewing, pricing and staffing a café that never closes, while customers walk in at random.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              {saved && (
-                <button onClick={state.resume} className="btn btn-cherry px-6 py-3 text-xl">
-                  Continue round {state.round}
+              {champMode && champ && (
+                <button onClick={state.resumeChampionship} className="btn btn-marigold px-5 py-3 text-xl">
+                  <Trophy color="#2a1d17" /> Continue {champMode.matchKind === 'weekly' ? 'weekly match' : champMode.matchName}, round {champ.round}
                 </button>
               )}
-              <button onClick={state.newGame} className={`btn px-6 py-3 text-xl ${saved ? 'btn-chalk' : 'btn-cherry'}`}>
+              {saved && (
+                <button onClick={state.resumeSolo} className={`btn px-6 py-3 text-xl ${champMode ? 'btn-chalk' : 'btn-cherry'}`}>
+                  Continue round {saved.round}
+                </button>
+              )}
+              <button onClick={state.newGame} className={`btn px-6 py-3 text-xl ${saved || champMode ? 'btn-chalk' : 'btn-cherry'}`}>
                 {saved ? 'Start over' : 'Play the game'}
               </button>
+              <a href="#championship" className="btn btn-chalk px-6 py-3 text-xl">
+                Championships
+              </a>
             </div>
           </div>
         </div>
@@ -68,13 +80,6 @@ export function Home() {
             </p>
           </div>
           <div className="chalk-rule pt-5">
-            <h2 className="font-display text-2xl text-chalk">Championship mode</h2>
-            <p className="mt-1 text-chalk-dim">
-              Class matches with a code and a weekly leaderboard are coming in a later version. Championships are for organized events; to play on your own,
-              choose Play the game.
-            </p>
-          </div>
-          <div className="chalk-rule pt-5">
             <h2 className="font-display text-2xl text-chalk">About</h2>
             <p className="mt-1 text-chalk-dim">
               An independent teaching game inspired by{' '}
@@ -87,6 +92,9 @@ export function Home() {
           </div>
         </div>
       </section>
+      <div className="border-t-2 border-board-line">
+        <ChampionshipPanel />
+      </div>
     </main>
   )
 }

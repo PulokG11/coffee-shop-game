@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
-import { SCENARIO, getRound } from '../engine/scenario'
+import { getRound } from '../engine/scenario'
 import type { SimMetrics } from '../engine/sim'
 import type { RoundSpec } from '../engine/types'
-import { fmtInt, fmtMoney } from '../lib/format'
+import { fmtInt, fmtMoney, ordinal } from '../lib/format'
 import { comparisonMessage } from '../lib/tips'
-import { useGame, type RoundResult } from '../store/game'
+import { useGame, useScenario, type RoundResult } from '../store/game'
 import { KEY_LABEL, VIZ, fmtDecision } from './chartKit'
 import { CremaAvatar } from './Guide'
 import { OutcomeChart, useSpread } from './OutcomeChart'
@@ -18,10 +18,14 @@ export function Comparison() {
 }
 
 function ComparisonBody({ result, onNext }: { result: RoundResult; onNext: () => void }) {
-  const r = getRound(SCENARIO, result.round)
+  const scn = useScenario()
+  const mode = useGame((s) => s.mode)
+  const openLeaderboard = useGame((s) => s.openLeaderboard)
+  const champ = mode.kind === 'championship' ? mode : null
+  const r = getRound(scn, result.round)
   const spread = useSpread(r, result.player, result.optimal, result.seed)
   const youWon = result.playerRun.profit > result.optimalRun.profit
-  const samePlan = r.decisions.every((k) => result.player[k] === result.optimal[k])
+  const samePlan = !!result.optimal && r.decisions.every((k) => result.player[k] === result.optimal![k])
   const verdict = samePlan
     ? 'You found the optimizer’s plan.'
     : youWon
@@ -39,7 +43,7 @@ function ComparisonBody({ result, onNext }: { result: RoundResult; onNext: () =>
       }),
     [result],
   )
-  const last = result.round === SCENARIO.rounds.length
+  const last = result.round === scn.rounds.length
 
   return (
     <main className="mx-auto max-w-[1200px] px-4 py-6">
@@ -57,6 +61,21 @@ function ComparisonBody({ result, onNext }: { result: RoundResult; onNext: () =>
         <CremaAvatar size={52} />
         <p className="rounded-2xl rounded-tl-sm bg-paper p-4 text-[16px] leading-relaxed text-ink">{message}</p>
       </div>
+      {champ && result.standing && (
+        <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2">
+          <p className="text-chalk">
+            <span className="font-display text-2xl">
+              {ordinal(result.standing.rank)} of {result.standing.players}
+            </span>{' '}
+            <span className="text-chalk-dim">
+              in {champ.matchName}, with {fmtMoney(result.standing.total)} after {result.round} {result.round === 1 ? 'round' : 'rounds'}.
+            </span>
+          </p>
+          <button onClick={() => openLeaderboard(champ.code)} className="btn btn-chalk px-4 py-2 text-base">
+            See the leaderboard
+          </button>
+        </div>
+      )}
 
       <div className="mt-8 grid items-start gap-6 lg:grid-cols-[1fr_1.35fr]">
         <section aria-labelledby="receipt-title" className="ticket-hang">
@@ -77,7 +96,7 @@ function ComparisonBody({ result, onNext }: { result: RoundResult; onNext: () =>
                   <tr key={k} className="border-t border-dashed border-paper-edge">
                     <td className="py-1.5">{KEY_LABEL[k]}</td>
                     <td className="py-1.5 text-right">{fmtDecision(k, result.player[k])}</td>
-                    <td className="py-1.5 text-right">{fmtDecision(k, result.optimal[k])}</td>
+                    <td className="py-1.5 text-right">{result.optimal ? fmtDecision(k, result.optimal[k]) : <span className="text-ink-faint">secret</span>}</td>
                   </tr>
                 ))}
               </tbody>
@@ -93,11 +112,13 @@ function ComparisonBody({ result, onNext }: { result: RoundResult; onNext: () =>
           <OutcomeChart
             rows={[
               { label: 'You', color: VIZ.you, expected: result.playerExpected, run: result.playerRun.profit, weeks: spread?.player ?? null },
-              { label: 'Optimizer', color: VIZ.optimizer, expected: result.optimalExpected, run: result.optimalRun.profit, weeks: spread?.optimal ?? null },
+              { label: 'Optimizer', color: VIZ.optimizer, expected: result.optimalExpected, run: result.optimalRun.profit, weeks: champ ? [] : (spread?.optimal ?? null) },
             ]}
           />
           <p className="mt-2 text-[15px]" aria-live="polite">
-            {samePlan
+            {champ
+              ? 'In a championship the optimizer’s plan stays secret, so only your plan is replayed. Everyone in the match was scored on the same customers, so the leaderboard rewards the plan, not the luck of the draw.'
+              : samePlan
               ? 'Your plan is the optimizer’s plan, so the two tie in every possible week. The spread above is what randomness alone does to one plan.'
               : spread
                 ? `Replaying ${spread.player.length} more weeks with identical customers for both plans, yours came out ahead in ${spread.playerWins} of them (${Math.round((spread.playerWins / spread.player.length) * 100)}%).`

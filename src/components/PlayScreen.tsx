@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
-import { SCENARIO, getRound } from '../engine/scenario'
+import { getRound } from '../engine/scenario'
 import { currentTips } from '../lib/tips'
-import { useGame } from '../store/game'
+import { useGame, useScenario } from '../store/game'
 import { useLive } from '../store/live'
 import { KEY_LABEL, fmtDecision } from './chartKit'
 import { ConstraintMonitor } from './ConstraintMonitor'
@@ -21,7 +21,8 @@ export function PlayScreen() {
   const introOpen = useGame((s) => s.introOpen)
   const setIntroOpen = useGame((s) => s.setIntroOpen)
   const live = useLive((s) => s.metrics)
-  const r = getRound(SCENARIO, round)
+  const scn = useScenario()
+  const r = getRound(scn, round)
 
   const tips = useMemo(() => currentTips({ r, draft, tried, live, tries }), [r, draft, tried, live, tries])
 

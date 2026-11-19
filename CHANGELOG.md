@@ -7,6 +7,19 @@ git checkout v0.1.0-scaffold -- src scenarios
 git commit -m "rollback: client to v0.1.0-scaffold"
 ```
 
+## v0.4.0-championship — 2026-11-19
+
+Championship mode (PRD FR-CHP-01 to 08).
+
+- **Class matches**: create with a name, optional custom code (reported if taken) and how long it stays open; players join with the code and a display name (unique per match, length-limited, screened for offensive words including look-alike spellings). Organizers can delete a match and all its scores, from the device that created it or with their organizer key.
+- **Global weekly match**: no code; a new variant of the eight rounds each ISO week, rolling over Monday 00:00 UTC, with a countdown.
+- **Fair, server-scored rounds**: a Neon Function (`api/index.ts`) re-scores every plan with the same engine code on shared random streams from a server-side secret. One submission per round, in order; resubmitting returns the stored result. The optimizer's plan is never sent.
+- **Leaderboard** of total profit, refreshed every 5 seconds, with your row marked; your rank after each round on the results screen.
+- **Separate saves**: a solo game and a championship game are kept side by side on the device; existing solo saves carry over.
+- **Data**: migration `003_championship.sql` (tables `championship`, `championship_player`, `championship_round`), applied to Neon. `npm run test:api` runs 24 end-to-end checks.
+
+Rollback: `git checkout v0.3.0-redesign -- src` restores the client without Championship mode. The API and tables can stay; `003_championship.down.sql` drops the tables and all championship data.
+
 ## v0.3.0-redesign — 2026-11-18
 
 Visual redesign, reviewed against the Gurobean screens but with its own identity: café chalkboard, order tickets and a till instead of the earlier cream dashboard.

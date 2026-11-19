@@ -109,13 +109,24 @@ export function DecisionPanel({ r }: { r: RoundSpec }) {
 function ConfirmSubmit({ r, onCancel }: { r: RoundSpec; onCancel: () => void }) {
   const draft = useGame((s) => s.draft)
   const submit = useGame((s) => s.submit)
+  const submitting = useGame((s) => s.submitting)
+  const error = useGame((s) => s.submitError)
+  const clearError = useGame((s) => s.clearSubmitError)
+  const mode = useGame((s) => s.mode)
   const cancelRef = useRef<HTMLButtonElement>(null)
+  const cancel = () => {
+    if (submitting) return
+    clearError()
+    onCancel()
+  }
   useEffect(() => {
     cancelRef.current?.focus()
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onCancel()
+  }, [])
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && cancel()
     document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
-  }, [onCancel])
+  })
 
   // Portal: the ticket's drop-shadow filter would otherwise trap position:fixed inside it
   return createPortal(
@@ -134,14 +145,21 @@ function ConfirmSubmit({ r, onCancel }: { r: RoundSpec; onCancel: () => void }) 
             ))}
           </dl>
           <p className="mt-3 text-[15px] text-ink-soft">
-            Your plan and the optimizer’s will each run one fresh five-day week with the same customers. You can’t change this round afterwards.
+            {mode.kind === 'championship'
+              ? `The championship server scores your plan on the same customers as everyone in ${mode.matchName}. You get one submission per round.`
+              : 'Your plan and the optimizer’s will each run one fresh five-day week with the same customers. You can’t change this round afterwards.'}
           </p>
+          {error && (
+            <p role="alert" className="mt-3 rounded-lg bg-bad-tint px-3 py-2 text-[15px] font-bold text-bad-ink">
+              {error}
+            </p>
+          )}
           <div className="mt-5 grid grid-cols-2 gap-2">
-            <button ref={cancelRef} onClick={onCancel} className="btn btn-paper">
+            <button ref={cancelRef} onClick={cancel} disabled={submitting} className="btn btn-paper">
               Keep testing
             </button>
-            <button onClick={submit} className="btn btn-cherry">
-              Lock it in
+            <button onClick={() => void submit()} disabled={submitting} aria-busy={submitting} className="btn btn-cherry">
+              {submitting ? 'Scoring…' : error ? 'Try again' : 'Lock it in'}
             </button>
           </div>
         </div>

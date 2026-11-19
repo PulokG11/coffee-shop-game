@@ -49,11 +49,30 @@ coffee-shop-game/
 │   ├── store/       # game state (saved in localStorage) and live-simulation state
 │   └── lib/         # formatting, tips, API client for the server (neon.ts, not used yet)
 ├── scenarios/       # versioned scenario packages
-├── server/          # FastAPI server for Championship mode (not wired to the client yet)
+├── api/             # Championship API (Neon Function), reuses src/engine
+├── scripts/         # API bundling, local server and end-to-end checks
+├── server/          # Older FastAPI server, not used by the game
 └── supabase/migrations/  # SQL for the Neon Postgres database
 ```
 
-## Server (Championship mode, in progress)
+## Championship mode
+
+- **Class match**: an organizer creates a match (name, optional custom code, open for 7/30/90 days) and shares the code; players join with the code and a display name. The organizer gets a key that lets them delete the match.
+- **Global weekly match**: no code. Each ISO week (Monday 00:00 UTC) plays its own variant of the eight rounds (`src/engine/weekly.ts`: demand, supplies and costs move within fixed ranges).
+- Everyone in a match faces the same customers: each round's seed comes from a server-side secret. Plans are re-scored on the server with the same engine code; one submission per round, in order. The optimizer's plan is never sent, only its profit.
+- Leaderboard of total profit, refreshed every 5 seconds.
+
+The API is a Neon Function (`api/index.ts`, slug `api`) on the Neon project's `main` branch, public URL in `.env.production`. It uses Neon's HTTP SQL endpoint, so the bundle has no dependencies.
+
+```bash
+npm run api:build                       # bundle + zip into dist-api/
+npm run api:dev                         # run it locally on :8787 (needs DATABASE_URL in .env.local)
+API_URL=<url> npm run test:api          # end-to-end checks; cleans up its own match
+```
+
+Deploy by uploading `dist-api/api.zip` (base64 in `dist-api/api.zip.b64`) as function `api` on branch `br-crimson-heart-az01ah7f` of project `billowing-math-38092403` (Neon MCP `deploy_function`, or the Neon CLI). Tables: `supabase/migrations/003_championship.sql`.
+
+## Python server (older, not used by the game)
 
 ```bash
 cd server

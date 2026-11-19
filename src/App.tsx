@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Comparison } from './components/Comparison'
 import { Home } from './components/Home'
+import { Leaderboard } from './components/Leaderboard'
 import { PlayScreen } from './components/PlayScreen'
 import { Summary } from './components/Summary'
 import { TopBar } from './components/TopBar'
@@ -22,6 +23,7 @@ export default function App() {
           <Comparison />
         </>
       )}
+      {screen === 'leaderboard' && <Leaderboard />}
       {screen === 'summary' && (
         <>
           <TopBar />

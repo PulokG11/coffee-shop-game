@@ -15,7 +15,7 @@ export interface Spread {
 }
 
 /** Simulates extra weeks in small batches so the page stays responsive. */
-export function useSpread(r: RoundSpec, player: Decision, optimal: Decision, seed: number): Spread | null {
+export function useSpread(r: RoundSpec, player: Decision, optimal: Decision | null, seed: number): Spread | null {
   const [spread, setSpread] = useState<Spread | null>(null)
   useEffect(() => {
     let cancelled = false
@@ -25,10 +25,12 @@ export function useSpread(r: RoundSpec, player: Decision, optimal: Decision, see
       for (let k = 0; k < 15 && acc.player.length < WEEKS; k++) {
         const s = hashSeed(seed, 'spread', acc.player.length)
         const p = runScored(r, player, s, SCENARIO.hours).profit
-        const o = runScored(r, optimal, s, SCENARIO.hours).profit
         acc.player.push(p)
-        acc.optimal.push(o)
-        if (p > o) acc.playerWins++
+        if (optimal) {
+          const o = runScored(r, optimal, s, SCENARIO.hours).profit
+          acc.optimal.push(o)
+          if (p > o) acc.playerWins++
+        }
       }
       if (acc.player.length < WEEKS) setTimeout(batch, 0)
       else setSpread(acc)
@@ -63,7 +65,7 @@ export function OutcomeChart({ rows }: { rows: Row[] }) {
   const W = 620
   const H = 64 + rows.length * 46
   const M = { l: 92, r: 18, t: 22, b: 26 }
-  const all = rows.flatMap((r) => [r.expected, r.run, ...(r.weeks ? [quantile(r.weeks, 0.05), quantile(r.weeks, 0.95)] : [])])
+  const all = rows.flatMap((r) => [r.expected, r.run, ...(r.weeks?.length ? [quantile(r.weeks, 0.05), quantile(r.weeks, 0.95)] : [])])
   const lo = Math.min(...all)
   const hi = Math.max(...all)
   const pad = Math.max(1, (hi - lo) * 0.08)
@@ -117,8 +119,8 @@ export function OutcomeChart({ rows }: { rows: Row[] }) {
         </text>
         {rows.map((r, i) => {
           const y = rowY(i)
-          const p5 = r.weeks ? quantile(r.weeks, 0.05) : null
-          const p95 = r.weeks ? quantile(r.weeks, 0.95) : null
+          const p5 = r.weeks?.length ? quantile(r.weeks, 0.05) : null
+          const p95 = r.weeks?.length ? quantile(r.weeks, 0.95) : null
           return (
             <g key={r.label}>
               <text x={M.l - 10} y={y + 4} fontSize="12" fontWeight="600" textAnchor="end" fill={VIZ.ink}>
@@ -136,11 +138,11 @@ export function OutcomeChart({ rows }: { rows: Row[] }) {
                   onPointerEnter={() => setHover(`${r.label}: 90% of 150 simulated weeks earned between ${fmtMoney(p5)} and ${fmtMoney(p95)}.`)}
                   onPointerLeave={() => setHover(null)}
                 />
-              ) : (
+              ) : r.weeks === null ? (
                 <text x={sx(r.expected)} y={y - 12} fontSize="10" textAnchor="middle" fill={VIZ.muted}>
                   simulating more weeks…
                 </text>
-              )}
+              ) : null}
               <circle
                 cx={sx(r.expected)}
                 cy={y}
